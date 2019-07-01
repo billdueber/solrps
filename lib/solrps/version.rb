@@ -1,3 +1,3 @@
-module Solrps
+class Solrps
   VERSION = "0.1.0"
 end
