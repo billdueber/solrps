@@ -30,6 +30,7 @@ class Solrps
   end
   
   def sizestring(size)
+    return '(empty)' if size.nil? or size == 0
     size > 1024 ? gbsize(size) : mbsize(size)
   end
   
