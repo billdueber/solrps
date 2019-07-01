@@ -49,13 +49,27 @@ class Solrps
       port: parts['jetty.port'],
       jetty_home: parts['jetty.home'],
       solr_home: parts['solr.solr.home'],
-      solr_log: parts['solr.log.dir']
+      solr_log: solr_log_location(parts),
     }
   end
   
 
   def solr_supports_api?(client)
     client.major_version >= 6
+  end
+
+  def solr_log_location(parts)
+    if parts['solr.log.dir']
+      parts['solr.log.dir']
+    else
+      jetty_log_maybe = "#{parts['solr.solr.home']}/logs"
+      
+      if Dir.exist?(jetty_log_maybe)
+        "(???) #{jetty_log_maybe}"
+      else
+        "(can't seem to find anything)"
+      end
+    end
   end
   
 
