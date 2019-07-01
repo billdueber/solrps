@@ -21,14 +21,25 @@ class Solrps
     end
   end
 
+  def mbsize(size)
+    '%-.2f MB' % size
+  end
+
+  def gbsize(size)
+    '%-.2f GB' % (size / 1024.0)
+  end
+  
+  def sizestring(size)
+    size > 1024 ? gbsize(size) : mbsize(size)
+  end
+  
   def coredata(client, corename)
     core = client.core(corename)
-    size = core.size > 1024 ? "#{core.size / 1024.0}GB" : "#{core.size}MB"
     {
       core_dir: core.instance_dir,
       data_dir: core.data_dir,
       documents: core.numDocs,
-      size_on_disk: size,
+      size_on_disk: sizestring(core.size),
       last_modified: core.last_modified,
     }
   end
@@ -74,7 +85,7 @@ class Solrps
         c.cores.each do |corename|
           puts ' ' * 6 +  corename
           coredata(c, corename).each_pair do |k,v|
-            puts '        %-8s %s' % [k, v]
+            puts '        %-15s %s' % [k, v]
           end
         end
       else
