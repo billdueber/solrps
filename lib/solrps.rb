@@ -28,10 +28,21 @@ class Solrps
   def gbsize(size)
     '%-.2f GB' % (size / 1024.0)
   end
-  
-  def sizestring(size)
-    return '(empty)' if size.nil? or size == 0
-    size > 1024 ? gbsize(size) : mbsize(size)
+
+  # bug in simple_solr_client doesn't deal with KB-level sizes
+  def sizestring(core)
+    size = core.size
+    if size.nil? or size == 0
+      if core.numDocs == 0
+        '(empty)'
+      else
+        '(< 1MB)'
+      end
+    elsif size > 1024
+      gbsize(size)
+    else
+      mbsize(size)
+    end
   end
   
   def coredata(client, corename)
@@ -40,7 +51,7 @@ class Solrps
       core_dir: core.instance_dir,
       data_dir: core.data_dir,
       documents: core.numDocs,
-      size_on_disk: sizestring(core.size),
+      size_on_disk: sizestring(core),
       last_modified: begin
                        core.last_modified
                      rescue TypeError
