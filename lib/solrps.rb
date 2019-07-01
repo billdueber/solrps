@@ -41,7 +41,11 @@ class Solrps
       data_dir: core.data_dir,
       documents: core.numDocs,
       size_on_disk: sizestring(core.size),
-      last_modified: core.last_modified,
+      last_modified: begin
+                       core.last_modified
+                     rescue TypeError
+                       "(core never modified)"
+                     end
     }
   end
 
