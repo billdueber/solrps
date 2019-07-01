@@ -62,9 +62,12 @@ class Solrps
     if parts['solr.log.dir']
       parts['solr.log.dir']
     else
-      jetty_log_maybe = "#{parts['solr.solr.home']}/logs"
-      
-      if Dir.exist?(jetty_log_maybe)
+      solr_log_maybe = "#{parts['solr.solr.home']}/logs"
+      jetty_log_maybe = "#{parts['jetty.home']}/logs"
+
+      if Dir.exist?(solr_log_maybe)
+        "(???) #{solr_log_maybe}"        
+      elsif Dir.exist?(jetty_log_maybe)
         "(???) #{jetty_log_maybe}"
       else
         "(can't seem to find anything)"
